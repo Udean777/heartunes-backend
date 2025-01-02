@@ -16,9 +16,9 @@ authRoutes.post(
   "/refresh-token",
   authController.refreshToken.bind(authController)
 );
-authRoutes.get(
-  "/verify-email",
-  authController.verifyEmail.bind(authController)
-);
+// authRoutes.get(
+//   "/verify-email",
+//   authController.verifyEmail.bind(authController)
+// );
 
 export default authRoutes;

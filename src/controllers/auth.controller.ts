@@ -119,32 +119,32 @@ export class AuthController {
     }
   }
 
-  public async verifyEmail(req: Request, res: Response): Promise<void> {
-    try {
-      const { token } = req.query;
+  // public async verifyEmail(req: Request, res: Response): Promise<void> {
+  //   try {
+  //     const { token } = req.query;
 
-      if (!token || typeof token !== "string") {
-        res.status(400).json({
-          error: "Verification token is required",
-        });
-        return;
-      }
+  //     if (!token || typeof token !== "string") {
+  //       res.status(400).json({
+  //         error: "Verification token is required",
+  //       });
+  //       return;
+  //     }
 
-      await authService.verifyEmail(token);
+  //     await authService.verifyEmail(token);
 
-      res.json({
-        message: "Email verified successfully",
-      });
-    } catch (error: any) {
-      if (error.name === "TokenExpiredError") {
-        res.status(401).json({
-          error: "Verification token has expired",
-        });
-      }
+  //     res.json({
+  //       message: "Email verified successfully",
+  //     });
+  //   } catch (error: any) {
+  //     if (error.name === "TokenExpiredError") {
+  //       res.status(401).json({
+  //         error: "Verification token has expired",
+  //       });
+  //     }
 
-      res.status(400).json({
-        error: error.message || "Failed to verify email",
-      });
-    }
-  }
+  //     res.status(400).json({
+  //       error: error.message || "Failed to verify email",
+  //     });
+  //   }
+  // }
 }

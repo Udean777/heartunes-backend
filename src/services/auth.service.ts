@@ -112,17 +112,17 @@ export class AuthService {
     }
   }
 
-  async verifyEmail(token: string): Promise<void> {
-    const payload = this.tokenService.verifyToken(token, "verification");
+  // async verifyEmail(token: string): Promise<void> {
+  //   const payload = this.tokenService.verifyToken(token, "verification");
 
-    await this.prisma.user.update({
-      where: { id: payload.userId },
-      data: {
-        isVerified: true,
-        verifiedAt: new Date(),
-      },
-    });
-  }
+  //   await this.prisma.user.update({
+  //     where: { id: payload.userId },
+  //     data: {
+  //       isVerified: true,
+  //       verifiedAt: new Date(),
+  //     },
+  //   });
+  // }
 
   // async requestPasswordReset(email: string): Promise<void> {
   //   const user = await this.prisma.user.findUnique({
@@ -138,15 +138,15 @@ export class AuthService {
   //   await this.emailService.sendPasswordResetEmail(email, resetToken);
   // }
 
-  async resetPassword(token: string, newPassword: string): Promise<void> {
-    const payload = this.tokenService.verifyToken(token, "reset");
-    const hashedPassword = await hashPassword(newPassword);
+  // async resetPassword(token: string, newPassword: string): Promise<void> {
+  //   const payload = this.tokenService.verifyToken(token, "reset");
+  //   const hashedPassword = await hashPassword(newPassword);
 
-    await this.prisma.user.update({
-      where: { id: payload.userId },
-      data: { password: hashedPassword },
-    });
-  }
+  //   await this.prisma.user.update({
+  //     where: { id: payload.userId },
+  //     data: { password: hashedPassword },
+  //   });
+  // }
 
   async refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
     const payload = this.tokenService.verifyToken(refreshToken, "refresh");
