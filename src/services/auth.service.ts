@@ -7,7 +7,7 @@ export class AuthService {
   constructor(private prisma: PrismaClient) {}
 
   private generateToken(userId: string): string {
-    return jwt.sign({ userId }, process.env.JWT_SECREt!, {
+    return jwt.sign({ userId }, process.env.JWT_SECRET!, {
       expiresIn: "7d",
     });
   }
@@ -29,7 +29,7 @@ export class AuthService {
       data: {
         email: data.email,
         username: data.username,
-        password: data.password,
+        password: hashedPassword,
       },
       select: {
         id: true,
