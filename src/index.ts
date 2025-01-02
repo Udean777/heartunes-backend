@@ -5,6 +5,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes";
 import { PrismaClient } from "@prisma/client";
+import { errorHandler } from "./middleware/error.middleware";
+import { Request, Response, NextFunction } from "express";
 
 dotenv.config();
 
@@ -39,6 +41,10 @@ app.use("/auth/login", authLimiter);
 app.use("/auth/password-reset", authLimiter);
 
 app.use("/auth", authRoutes);
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  errorHandler(err, req, res, next);
+});
 
 const PORT = process.env.PORT || 3000;
 

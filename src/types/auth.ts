@@ -10,10 +10,23 @@ export interface LoginDTO {
 }
 
 export interface AuthResponse {
-  token: string;
   user: {
     id: string;
-    username: string;
     email: string;
+    username: string;
+    isVerified?: boolean;
   };
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface TokenPayload {
+  userId: string;
+  type: "access" | "refresh" | "verification" | "reset";
+}
+
+export interface RefreshTokenResponse {
+  user: any;
+  accessToken: string;
+  refreshToken: string;
 }

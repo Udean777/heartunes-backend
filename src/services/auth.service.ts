@@ -1,16 +1,20 @@
 import { PrismaClient } from "@prisma/client";
-import jwt from "jsonwebtoken";
 import { hashPassword, comparePassword } from "../utils/password";
-import { RegisterDTO, LoginDTO, AuthResponse } from "../types/auth";
+import {
+  RegisterDTO,
+  LoginDTO,
+  AuthResponse,
+  RefreshTokenResponse,
+} from "../types/auth";
+import { EmailService } from "./email.service";
+import { TokenService } from "./token.service";
 
 export class AuthService {
-  constructor(private prisma: PrismaClient) {}
-
-  private generateToken(userId: string): string {
-    return jwt.sign({ userId }, process.env.JWT_SECRET!, {
-      expiresIn: "7d",
-    });
-  }
+  constructor(
+    private prisma: PrismaClient,
+    private emailService: EmailService,
+    private tokenService: TokenService
+  ) {}
 
   async register(data: RegisterDTO): Promise<AuthResponse> {
     const existingUser = await this.prisma.user.findFirst({
@@ -24,25 +28,40 @@ export class AuthService {
     }
 
     const hashedPassword = await hashPassword(data.password);
-
     const user = await this.prisma.user.create({
       data: {
         email: data.email,
         username: data.username,
         password: hashedPassword,
-      },
-      select: {
-        id: true,
-        email: true,
-        username: true,
+        isVerified: false,
       },
     });
 
-    const token = this.generateToken(user.id);
+    const accessToken = this.tokenService.generateAccessToken(user.id);
+    const refreshToken = this.tokenService.generateRefreshToken(user.id);
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { refreshToken },
+    });
+
+    const verificationToken = this.tokenService.generateVerificationToken(
+      user.id
+    );
+    await this.emailService.sendVerificationEmail(
+      user.email,
+      verificationToken
+    );
 
     return {
-      token,
-      user,
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        isVerified: user.isVerified,
+      },
     };
   }
 
@@ -61,14 +80,93 @@ export class AuthService {
       throw new Error("Invalid credentials");
     }
 
-    const token = this.generateToken(user.id);
+    const accessToken = this.tokenService.generateAccessToken(user.id);
+    const refreshToken = this.tokenService.generateRefreshToken(user.id);
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { refreshToken },
+    });
 
     return {
-      token,
+      accessToken,
+      refreshToken,
       user: {
         id: user.id,
         email: user.email,
         username: user.username,
+        isVerified: user.isVerified,
+      },
+    };
+  }
+
+  async logout(userId: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { refreshToken: null },
+    });
+  }
+
+  async verifyEmail(token: string): Promise<void> {
+    const payload = this.tokenService.verifyToken(token, "verification");
+
+    await this.prisma.user.update({
+      where: { id: payload.userId },
+      data: {
+        isVerified: true,
+        verifiedAt: new Date(),
+      },
+    });
+  }
+
+  async requestPasswordReset(email: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return;
+    }
+
+    const resetToken = this.tokenService.generatePasswordResetToken(user.id);
+
+    await this.emailService.sendPasswordResetEmail(email, resetToken);
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    const payload = this.tokenService.verifyToken(token, "reset");
+    const hashedPassword = await hashPassword(newPassword);
+
+    await this.prisma.user.update({
+      where: { id: payload.userId },
+      data: { password: hashedPassword },
+    });
+  }
+
+  async refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
+    const payload = this.tokenService.verifyToken(refreshToken, "refresh");
+
+    const accessToken = this.tokenService.generateAccessToken(payload.userId);
+    const newRefreshToken = this.tokenService.generateRefreshToken(
+      payload.userId
+    );
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: payload.userId },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return {
+      accessToken,
+      refreshToken: newRefreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        isVerified: user.isVerified,
       },
     };
   }
