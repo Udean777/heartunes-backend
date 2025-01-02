@@ -1,10 +1,16 @@
-import jwt from "jsonwebtoken";
-export class TokenService {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TokenService = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+class TokenService {
     generateAccessToken(userId) {
-        return jwt.sign({ userId, type: "access" }, process.env.JWT_ACCESS_SECRET, { expiresIn: "15m" });
+        return jsonwebtoken_1.default.sign({ userId, type: "access" }, process.env.JWT_ACCESS_SECRET, { expiresIn: "15m" });
     }
     generateRefreshToken(userId) {
-        return jwt.sign({ userId, type: "refresh" }, process.env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
+        return jsonwebtoken_1.default.sign({ userId, type: "refresh" }, process.env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
     }
     // generateVerificationToken(userId: string): string {
     //   return jwt.sign(
@@ -22,7 +28,7 @@ export class TokenService {
     // }
     verifyToken(token, type) {
         const secret = this.getSecretForType(type);
-        return jwt.verify(token, secret);
+        return jsonwebtoken_1.default.verify(token, secret);
     }
     getSecretForType(type) {
         switch (type) {
@@ -39,4 +45,4 @@ export class TokenService {
         }
     }
 }
-//# sourceMappingURL=token.service.js.map
+exports.TokenService = TokenService;

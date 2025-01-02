@@ -1,5 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.errorHandler = void 0;
 // Explicitly define the error handler type
-export const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res, next) => {
     console.error(err.stack);
     if (err.name === "JsonWebTokenError") {
         return res.status(401).json({ error: "Invalid token" });
@@ -13,4 +16,4 @@ export const errorHandler = (err, req, res, next) => {
             : err.message,
     });
 };
-//# sourceMappingURL=error.middleware.js.map
+exports.errorHandler = errorHandler;

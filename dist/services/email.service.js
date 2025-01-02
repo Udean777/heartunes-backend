@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,10 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import nodemailer from "nodemailer";
-export class EmailService {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EmailService = void 0;
+const nodemailer_1 = __importDefault(require("nodemailer"));
+class EmailService {
     constructor() {
-        this.transporter = nodemailer.createTransport({
+        this.transporter = nodemailer_1.default.createTransport({
             host: process.env.SMTP_HOST,
             port: parseInt(process.env.SMTP_PORT || "587"),
             secure: false,
@@ -52,4 +58,4 @@ export class EmailService {
         });
     }
 }
-//# sourceMappingURL=email.service.js.map
+exports.EmailService = EmailService;

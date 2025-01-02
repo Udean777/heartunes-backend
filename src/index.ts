@@ -3,10 +3,10 @@ import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import authRoutes from "./routes/auth.routes";
 // import { PrismaClient } from "@prisma/client";
-import { errorHandler } from "./middleware/error.middleware";
 import { Request, Response, NextFunction } from "express";
+import authRoutes from "./routes/auth.routes";
+import { errorHandler } from "./middleware/error.middleware";
 
 dotenv.config();
 

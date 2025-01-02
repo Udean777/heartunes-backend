@@ -1,15 +1,16 @@
-import { Router } from "express";
-import { AuthController } from "../controllers/auth.controller";
-import { authMiddleware } from "../middleware/auth.middleware";
-const authRoutes = Router();
-const authController = new AuthController();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_controller_1 = require("../controllers/auth.controller");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const authRoutes = (0, express_1.Router)();
+const authController = new auth_controller_1.AuthController();
 authRoutes.post("/register", authController.register.bind(authController));
 authRoutes.post("/login", authController.login.bind(authController));
-authRoutes.post("/logout", authMiddleware, authController.logout.bind(authController));
+authRoutes.post("/logout", auth_middleware_1.authMiddleware, authController.logout.bind(authController));
 authRoutes.post("/refresh-token", authController.refreshToken.bind(authController));
 // authRoutes.get(
 //   "/verify-email",
 //   authController.verifyEmail.bind(authController)
 // );
-export default authRoutes;
-//# sourceMappingURL=auth.routes.js.map
+exports.default = authRoutes;

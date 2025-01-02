@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -7,15 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { AuthService } from "../services/auth.service";
-import { PrismaClient } from "@prisma/client";
-import { TokenService } from "../services/token.service";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthController = void 0;
+const auth_service_1 = require("../services/auth.service");
+const client_1 = require("@prisma/client");
+const token_service_1 = require("../services/token.service");
 // import { EmailService } from "../services/email.service";
-const prisma = new PrismaClient();
-const tokenService = new TokenService();
+const prisma = new client_1.PrismaClient();
+const tokenService = new token_service_1.TokenService();
 // const emailService = new EmailService();
-const authService = new AuthService(prisma, tokenService);
-export class AuthController {
+const authService = new auth_service_1.AuthService(prisma, tokenService);
+class AuthController {
     register(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -117,4 +120,4 @@ export class AuthController {
         });
     }
 }
-//# sourceMappingURL=auth.controller.js.map
+exports.AuthController = AuthController;

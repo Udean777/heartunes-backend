@@ -6,7 +6,6 @@ import {
   AuthResponse,
   RefreshTokenResponse,
 } from "../types/auth";
-import { EmailService } from "./email.service";
 import { TokenService } from "./token.service";
 
 export class AuthService {
