@@ -18,21 +18,21 @@ export class TokenService {
     );
   }
 
-  generateVerificationToken(userId: string): string {
-    return jwt.sign(
-      { userId, type: "verification" } as TokenPayload,
-      process.env.JWT_VERIFICATION_SECRET!,
-      { expiresIn: "24h" }
-    );
-  }
+  // generateVerificationToken(userId: string): string {
+  //   return jwt.sign(
+  //     { userId, type: "verification" } as TokenPayload,
+  //     process.env.JWT_VERIFICATION_SECRET!,
+  //     { expiresIn: "24h" }
+  //   );
+  // }
 
-  generatePasswordResetToken(userId: string): string {
-    return jwt.sign(
-      { userId, type: "reset" } as TokenPayload,
-      process.env.JWT_RESET_SECRET!,
-      { expiresIn: "1h" }
-    );
-  }
+  // generatePasswordResetToken(userId: string): string {
+  //   return jwt.sign(
+  //     { userId, type: "reset" } as TokenPayload,
+  //     process.env.JWT_RESET_SECRET!,
+  //     { expiresIn: "1h" }
+  //   );
+  // }
 
   verifyToken(token: string, type: TokenPayload["type"]): TokenPayload {
     const secret = this.getSecretForType(type);

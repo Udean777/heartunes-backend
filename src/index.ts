@@ -4,14 +4,14 @@ import rateLimit from "express-rate-limit";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
 import { errorHandler } from "./middleware/error.middleware";
 import { Request, Response, NextFunction } from "express";
 
 dotenv.config();
 
 const app = express();
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 app.use(
   cors({
@@ -38,7 +38,7 @@ const authLimiter = rateLimit({
 });
 
 app.use("/auth/login", authLimiter);
-app.use("/auth/password-reset", authLimiter);
+// app.use("/auth/password-reset", authLimiter);
 
 app.use("/auth", authRoutes);
 

@@ -12,7 +12,7 @@ import { TokenService } from "./token.service";
 export class AuthService {
   constructor(
     private prisma: PrismaClient,
-    private emailService: EmailService,
+    // private emailService: EmailService,
     private tokenService: TokenService
   ) {}
 
@@ -45,13 +45,13 @@ export class AuthService {
       data: { refreshToken },
     });
 
-    const verificationToken = this.tokenService.generateVerificationToken(
-      user.id
-    );
-    await this.emailService.sendVerificationEmail(
-      user.email,
-      verificationToken
-    );
+    // const verificationToken = this.tokenService.generateVerificationToken(
+    //   user.id
+    // );
+    // await this.emailService.sendVerificationEmail(
+    //   user.email,
+    //   verificationToken
+    // );
 
     return {
       accessToken,
@@ -124,19 +124,19 @@ export class AuthService {
     });
   }
 
-  async requestPasswordReset(email: string): Promise<void> {
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-    });
+  // async requestPasswordReset(email: string): Promise<void> {
+  //   const user = await this.prisma.user.findUnique({
+  //     where: { email },
+  //   });
 
-    if (!user) {
-      return;
-    }
+  //   if (!user) {
+  //     return;
+  //   }
 
-    const resetToken = this.tokenService.generatePasswordResetToken(user.id);
+  //   const resetToken = this.tokenService.generatePasswordResetToken(user.id);
 
-    await this.emailService.sendPasswordResetEmail(email, resetToken);
-  }
+  //   await this.emailService.sendPasswordResetEmail(email, resetToken);
+  // }
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
     const payload = this.tokenService.verifyToken(token, "reset");

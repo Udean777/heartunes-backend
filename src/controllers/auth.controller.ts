@@ -2,12 +2,12 @@ import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service";
 import { PrismaClient } from "@prisma/client";
 import { TokenService } from "../services/token.service";
-import { EmailService } from "../services/email.service";
+// import { EmailService } from "../services/email.service";
 
 const prisma = new PrismaClient();
 const tokenService = new TokenService();
-const emailService = new EmailService();
-const authService = new AuthService(prisma, emailService, tokenService);
+// const emailService = new EmailService();
+const authService = new AuthService(prisma, tokenService);
 
 interface AuthenticatedRequest extends Request {
   userId: string;
