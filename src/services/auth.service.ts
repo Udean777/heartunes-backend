@@ -101,10 +101,15 @@ export class AuthService {
   }
 
   async logout(userId: string): Promise<void> {
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: { refreshToken: null },
-    });
+    try {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { refreshToken: null },
+      });
+    } catch (error: any) {
+      console.error("Error in logout service:", error);
+      throw new Error("Failed to update user");
+    }
   }
 
   async verifyEmail(token: string): Promise<void> {

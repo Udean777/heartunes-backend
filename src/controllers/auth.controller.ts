@@ -10,7 +10,7 @@ const emailService = new EmailService();
 const authService = new AuthService(prisma, emailService, tokenService);
 
 interface AuthenticatedRequest extends Request {
-  userId?: string; // Gunakan `?` jika properti opsional
+  userId: string;
 }
 
 export class AuthController {
@@ -115,6 +115,35 @@ export class AuthController {
     } catch (error: any) {
       res.status(401).json({
         error: error.message || "Invalid refresh token",
+      });
+    }
+  }
+
+  public async verifyEmail(req: Request, res: Response): Promise<void> {
+    try {
+      const { token } = req.query;
+
+      if (!token || typeof token !== "string") {
+        res.status(400).json({
+          error: "Verification token is required",
+        });
+        return;
+      }
+
+      await authService.verifyEmail(token);
+
+      res.json({
+        message: "Email verified successfully",
+      });
+    } catch (error: any) {
+      if (error.name === "TokenExpiredError") {
+        res.status(401).json({
+          error: "Verification token has expired",
+        });
+      }
+
+      res.status(400).json({
+        error: error.message || "Failed to verify email",
       });
     }
   }
